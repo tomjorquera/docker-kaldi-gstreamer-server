@@ -68,4 +68,6 @@ RUN git clone https://github.com/kaldi-asr/kaldi && \
 COPY start.sh stop.sh /opt/
 
 RUN chmod +x /opt/start.sh && \
-    chmod +x /opt/stop.sh 
+    chmod +x /opt/stop.sh
+
+CMD /opt/start.sh
