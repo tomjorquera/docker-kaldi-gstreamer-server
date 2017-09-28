@@ -30,6 +30,35 @@ if [ "$YAML" == "" ] ; then
   exit 1;
 fi;
 
+# we expect a certain number of files to be referenced in the yaml
+# and those files to exist at the referenced paths
+
+check-file()
+{
+  FILE=$(grep $1: $YAML | awk '{print $2}');
+  if [ "$FILE" == "" ]; then
+      echo "Missing $1 in $YAML"
+      return 2
+  elif [ ! -f $FILE ]; then
+      echo "Wrong $1 path $FILE in $YAML"
+      return 3
+  fi
+}
+
+if [ -f $YAML ]; then
+    for file in "model" "lda-mat" "word-syms" "fst"; do
+        check-file $file
+        error=$?
+        if [ $error -ne 0 ]; then
+            exit $error
+        fi
+    done
+else
+    echo "The $YAML file doesn't exist"
+    exit 1
+fi
+
+# everything is good
 
 if [ "$MASTER" == "localhost" ] ; then
   # start a local master
